@@ -22,6 +22,7 @@ public class Main {
 				assertThat(urlArray[i].toLowerCase().startsWith("http://"))
 						.isTrue();
 				downloadManager.addDownload(new URL(urlArray[i]));
+				downloadManager.completeDownload();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

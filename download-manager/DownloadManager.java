@@ -1,7 +1,6 @@
 package com.java.concurrency.downloadmanager;
 
 import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,7 +9,6 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -32,11 +30,10 @@ public class DownloadManager {
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
 	public synchronized void addDownload(URL urlToDownload) throws IOException {
 		System.out.println("Starting download for URL - "
 				+ urlToDownload.toString());
-		Future future = executors.submit(() -> {
+		executors.submit(() -> {
 			// Connect to the website using JSoup
 				try {
 					Document doc = Jsoup.connect(urlToDownload.toString())
@@ -67,12 +64,17 @@ public class DownloadManager {
 
 		InputStream in = urlToDownload.openStream();
 
-		OutputStream out = new BufferedOutputStream(new FileOutputStream("I://download/" + fileName));
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(
+				"I://download/" + fileName));
 
 		for (int b; (b = in.read()) != -1;) {
 			out.write(b);
 		}
 		out.close();
 		in.close();
+	}
+
+	public void completeDownload() {
+		executors.shutdown();
 	}
 }
